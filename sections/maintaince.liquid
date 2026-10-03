@@ -1,0 +1,147 @@
+{% schema %}
+{
+  "name": "Maintenance Countdown",
+  "settings": [],
+  "presets": [{ "name": "Maintenance Countdown" }]
+}
+{% endschema %}
+
+<style>
+  .mc-wrap-{{ section.id }} {
+    background: #0a0a0a;
+    color: #ffffff;
+    padding: 140px 24px;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mc-inner-{{ section.id }} {
+    max-width: 680px;
+    width: 100%;
+  }
+  .mc-badge-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 36px;
+    opacity: 0.75;
+  }
+  .mc-pulse-{{ section.id }} {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    margin-right: 12px;
+    animation: mcpulse-{{ section.id }} 2s infinite;
+  }
+  @keyframes mcpulse-{{ section.id }} {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+  .mc-title-{{ section.id }} {
+    font-size: clamp(2.4rem, 5vw, 3.75rem);
+    margin: 0 0 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .mc-subtitle-{{ section.id }} {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    opacity: 0.65;
+    max-width: 520px;
+    margin: 0 auto 64px;
+  }
+  .mc-timer-{{ section.id }} {
+    display: inline-flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mc-unit-{{ section.id }} {
+    min-width: 90px;
+  }
+  .mc-num-{{ section.id }} {
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .mc-label-{{ section.id }} {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    opacity: 0.45;
+    margin-top: 12px;
+  }
+  .mc-done-{{ section.id }} {
+    display: none;
+    font-size: 1.2rem;
+    opacity: 0.7;
+  }
+  @media (max-width: 600px) {
+    .mc-wrap-{{ section.id }} { padding: 100px 20px; }
+    .mc-timer-{{ section.id }} { gap: 24px; }
+  }
+</style>
+
+<div class="mc-wrap-{{ section.id }}">
+  <div class="mc-inner-{{ section.id }}">
+    <div class="mc-badge-{{ section.id }}">
+      <span class="mc-pulse-{{ section.id }}"></span>Maintenance in progress
+    </div>
+    <h1 class="mc-title-{{ section.id }}">We'll Be Right Back</h1>
+    <p class="mc-subtitle-{{ section.id }}">Due to a high volume of orders, we're currently on a brief maintenance break. We will be back shortly — thank you for your patience.</p>
+
+    <div id="mc-timer-{{ section.id }}" class="mc-timer-{{ section.id }}">
+      <div class="mc-unit-{{ section.id }}">
+        <div id="mc-hours-{{ section.id }}" class="mc-num-{{ section.id }}">--</div>
+        <div class="mc-label-{{ section.id }}">Hours</div>
+      </div>
+      <div class="mc-unit-{{ section.id }}">
+        <div id="mc-minutes-{{ section.id }}" class="mc-num-{{ section.id }}">--</div>
+        <div class="mc-label-{{ section.id }}">Minutes</div>
+      </div>
+      <div class="mc-unit-{{ section.id }}">
+        <div id="mc-seconds-{{ section.id }}" class="mc-num-{{ section.id }}">--</div>
+        <div class="mc-label-{{ section.id }}">Seconds</div>
+      </div>
+    </div>
+
+    <p id="mc-done-{{ section.id }}" class="mc-done-{{ section.id }}">We're back online — thank you for waiting.</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var KEY = 'mc_end_{{ section.id }}';
+    var DURATION = 12 * 60 * 60 * 1000;
+    var stored = localStorage.getItem(KEY);
+    var endTime = stored ? parseInt(stored, 10) : Date.now() + DURATION;
+    if (!stored) localStorage.setItem(KEY, endTime);
+
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    function update() {
+      var diff = endTime - Date.now();
+      if (diff <= 0) {
+        document.getElementById('mc-timer-{{ section.id }}').style.display = 'none';
+        document.getElementById('mc-done-{{ section.id }}').style.display = 'block';
+        clearInterval(interval);
+        return;
+      }
+      document.getElementById('mc-hours-{{ section.id }}').textContent = pad(Math.floor(diff / 3600000));
+      document.getElementById('mc-minutes-{{ section.id }}').textContent = pad(Math.floor((diff % 3600000) / 60000));
+      document.getElementById('mc-seconds-{{ section.id }}').textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
+
+    update();
+    var interval = setInterval(update, 1000);
+  })();
+</script>

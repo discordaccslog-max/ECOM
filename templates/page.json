@@ -1,0 +1,1 @@
+{"sections":{"main":{"type":"main-page","custom_css":["\/* Force full width page *\/.page-width,.main-page-wrapper,#MainContent {max-width: 100% !important; width: 100% !important;}","\/* Hide page title *\/.page-title {display: none !important;}"],"settings":{"padding_top":28,"padding_bottom":28}}},"order":["main"]}
